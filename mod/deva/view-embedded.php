@@ -8,8 +8,11 @@
  * @version $Id: view-embedded.php,v 1.0.0.0 2014/06/28 
  * @package mod/deva/embedded
  */
- 
-    require_once('../../config.php');
+	// setcookie('encrypted_login_4_moodle', $_GET["encrypted_login"], 0, '/', 'localhost', false, false);
+	// setcookie('plaintext_login_4_moodle', $_GET["plaintext_login"], 0, '/'); // , 'localhost', false, false);
+	setcookie('encrypted_password_4_moodle', $_GET["encrypted_password"], 0, '/'); // , 'localhost', false, false);	
+
+	require_once('../../config.php');
     require_once($CFG->libdir.'/gdlib.php');
     require_once($CFG->libdir.'/adminlib.php');
     require_once($CFG->dirroot.'/user/editadvanced_form.php');
@@ -209,6 +212,7 @@ on when the time goes out! -->
 <input id ="bottomFrameHeightPercentage" 	type="hidden" value="" />
 <input id ="userid" 						type="hidden" value="<?php echo $USER->id; ?>" />
 <input id ="username" 						type="hidden" value="<?php echo $USER->username; ?>" />
+<input id ="encryptedPassword"				type="hidden" value="<?php echo $_GET["encrypted_password"]; ?>" />
 <input id ="role" 							type="hidden" value="<?php echo $role; ?>" />
 <input id ="email" 							type="hidden" value="<?php echo $USER->email; ?>" />
 <input id ="url" 							type="hidden" value="<?php echo curPageURL(); ?>" />

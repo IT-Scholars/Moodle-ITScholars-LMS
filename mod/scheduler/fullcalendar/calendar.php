@@ -3,6 +3,8 @@
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/config.php');
 require_once(dirname(dirname(dirname(dirname(__FILE__)))).'/user/profile/lib.php');
 
+require_once($CFG->libdir."/crypt.php");
+
 require_once($CFG->libdir .'/ddllib.php');
 
 require_once('parser.php');
@@ -492,6 +494,60 @@ $file = file_get_contents('calendarEvents4.xml');
 		
 
 
+} else if ($action == 'scheduleAppointmentsWithEncryptedPassword') {
+	header('Content-Type: text/x-json');
+	
+	if (isset($_POST['requestingUser'])) {
+			$id = $_POST['id'];
+			$requestingUser = $_POST['requestingUser']; 
+			$username = $_POST['username'];
+			$encryptedPassword = $_POST['encryptedPassword'];
+			$start = $_POST['start']; 
+			$end = $_POST['end']; 
+			$resourceType = $_POST['resourceType']; 
+			$course = $_POST['course']; 
+			$affiliationId = $_POST['affiliationId'];
+			$availabilityStatus = $_POST['availabilityStatus'];
+			
+			$requestType = $_POST['requestType']; 
+		}
+	
+	try {
+			$appointment = array('id' => $id,
+								'userName' => $username,
+								'start' => $start,
+								'end' => $end,
+								'resourceType' => $resourceType,
+								'course' => $course,
+								'affiliationId' => $affiliationId,
+								'availabilityStatus' => $availabilityStatus,
+								'action' => NULL);
+			$encryptedCredential = array(
+								'userName' => $username,
+								'encryptedPassword' => $encryptedPassword);
+			
+			$params = array('requestingUser' => $requestingUser,
+							'appointment' => $appointment,
+							'encryptedCredential' => $encryptedCredential);
+							
+			$client = new SoapClient($wsdl, array('location' => $location));
+			
+			if ($requestType == "User") {
+				$result = $client->scheduleUserAppointmentsWithEncryptedPassword($params);
+			} else if($requestType == "Mentor") {
+				$result = $client->scheduleMentorAppointments($params);	
+			} else if($requestType == "Host") {
+				$result = $client->scheduleHostAppointments($params);			
+			}
+			
+			echo json_encode($result->appointment);
+						
+		} catch (SoapFault $soapfault) {
+			//echo $soapfault->getMessage();
+			echo $soapfault->getTraceAsString();
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 }else if ($action=='scheduleRecurringAppointments'){
 	header('Content-Type: text/x-json');
 
@@ -516,6 +572,64 @@ $file = file_get_contents('calendarEvents4.xml');
 		if($requestType == "User"){
 			$result = $client->scheduleUserAppointments(array('requestingUser' => $requestingUser,
 														  'appointment' => $appointments));
+		}else if($requestType == "Mentor"){
+			$result = $client->scheduleMentorAppointments(array('requestingUser' => $requestingUser,
+														  'appointment' => $appointments));
+		}else if($requestType == "Host"){
+			$result = $client->scheduleHostAppointments(array('requestingUser' => $requestingUser,
+														  'appointment' => $appointments));
+		}
+	
+		echo json_encode($result->appointment);
+		//print_r($result->appointment);
+
+		
+		
+	}catch (SoapFault $soapfault) {
+	
+		//echo $soapfault->getMessage();
+		echo $soapfault->getTraceAsString();
+	}catch (Exception $e) {
+	
+		echo $e->getMessage();
+	
+	
+
+	}
+
+
+} else if ($action=='scheduleRecurringAppointmentsWithEncryptedPassword') {
+	header('Content-Type: text/x-json');
+
+	if (isset($_POST['requestingUser'])){
+		$requestingUser = $_POST['requestingUser']; 
+		$username = $_POST['username'];
+		$encryptedPassword = $_POST['encryptedPassword'];
+		$appointments = $_POST['appointments'];
+		
+		$requestType = $_POST['requestType'];
+	}
+	
+	/*
+	$recurrAppointments=array();
+	foreach ($appointments as $appointment) {
+		array_push($recurrAppointments,"appointment"=>appointment);
+	}
+	*/
+	$encryptedCredential = array(
+		'userName' => $username,
+		'encryptedPassword' => $encryptedPassword);
+	
+	try {
+											
+		$client=new SoapClient($wsdl,array('location'=>$location));
+														  
+		if($requestType == "User"){
+			$result = $client->scheduleUserAppointmentsWithEncryptedPassword(
+				array(
+					'requestingUser' => $requestingUser,
+					'appointment' => $appointments,
+					'encryptedCredential' => $encryptedCredential));
 		}else if($requestType == "Mentor"){
 			$result = $client->scheduleMentorAppointments(array('requestingUser' => $requestingUser,
 														  'appointment' => $appointments));
@@ -1384,11 +1498,16 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 		$password = $usernew->newpassword;
 	}
 	
+	echo "<br/>\$password: $password";
+	$encryptedPassword = Crypt::encrypt($password);
+	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	
 	try {
 			
 		$params = array('requestingUser' => $requestingUser,
 						'userName' => $usernew->username,
-						'password' => $password,		// password is already hashed.
+						// 'password' => $password,		// password is already hashed.
+						'encryptedPassword' => $encryptedPassword,		
 						'firstName' => $usernew->firstname,
 						'lastName' => $usernew->lastname,
 						'emailAddress' => $usernew->email,
@@ -1396,7 +1515,7 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 						//'timeZone' => $timezone );
 		
 		 $client = new SoapClient($wsdl,array('location'=>$location));
-		 $result = $client->createUserProfile($params);
+		 $result = $client->createUserProfileWithEncryptedPassword($params);
 		
 		
 		
@@ -1447,11 +1566,17 @@ function editUserProfile($requestingUser, $userold){
 		$newrole = "Student";
 	}
 
+	require_once($CFG->libdir."/crypt.php");
+	echo "<br/>\$userold->newpassword: $userold->newpassword";
+	$encryptedPassword = Crypt::encrypt($userold->newpassword);
+	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	
 	try {
 		
 		$params = array('requestingUser' => $requestingUser,
 						'userName' => $userold->username,
-						'password'=>  $userold->newpassword,
+						// 'password'=>  $userold->newpassword,
+						'encryptedPassword'=>  $encryptedPassword,
 						'firstName' => $userold->firstname,
 						'lastName' => $userold->lastname,
 						'emailAddress' => $userold->email,
@@ -1460,7 +1585,7 @@ function editUserProfile($requestingUser, $userold){
 						'contactInfo' => $userold->phone1 );
 		
 		$client = new SoapClient($wsdl,array('location'=>$location));
-		$result = $client->editUserProfile($params);
+		$result = $client->editUserProfileWithEncryptedPassword($params);
 	
 		
 		$success = $result->success;
@@ -1500,12 +1625,16 @@ function editUserProfilePassword($requestingUser, $username, $password){
 		$newrole = "Student";
 	}
 
+	require_once($CFG->libdir."/crypt.php");
+	echo "<br/>\$password: $password";
+	$encryptedPassword = Crypt::encrypt($password);
+	echo "<br/>\$encryptedPassword: $encryptedPassword";
 	
 	try {
 						
 		$params = array('requestingUser' => $requestingUser,
 						'userName' => $username,
-						'password' => $password,	
+						'encryptedPassword' => $encryptedPassword,	
 						'firstName' => $user->firstname,
 						'lastName' => $user->lastname,
 						'emailAddress' => $user->email,
@@ -1514,7 +1643,7 @@ function editUserProfilePassword($requestingUser, $username, $password){
 						'contactInfo' => $userold->phone1 );
 		
 		$client = new SoapClient($wsdl,array('location'=>$location));
-		$result = $client->editUserProfile($params);
+		$result = $client->editUserProfileWithEncryptedPassword($params);
 	
 		
 		$success = $result->success;

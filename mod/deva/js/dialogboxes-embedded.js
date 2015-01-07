@@ -149,14 +149,14 @@ function createInstantAppointmentDialogBox(username, course, type) {
 }
 
 // sms: 6/28/2014 Added to support embedded version
-function createInstantAppointmentEmbedded(username, course, type, hours, minutes) {
+function createInstantAppointmentEmbedded(username, encryptedPassword, course, type, hours, minutes) {
 			                
 	progressDialogBox(true);
 				
 	setTimeout(function(){	// Added: to allow the progress bar to appear.
 					
-		var newevent = getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hours, minutes);
-		if (scheduleAppointment(newevent, username)) {
+		var neweventWithEncryptedPassword = getCreateNewEventObjFromInstantAppEmbedded(username, encryptedPassword, course, type, hours, minutes);
+		if (scheduleAppointmentWithEncryptedPassword(neweventWithEncryptedPassword, username)) {
 			// sms: updated on 6/2/2011
 			// var devaWasDisplayed = false;
 			// for (var i=0; i<5; i++) {
@@ -754,7 +754,7 @@ function getCreateNewEventObjFromInstantAppForm(username, course, type){
 
 // sms: 6/28/2014 Added to support embedded version
 //Grabs the Event Obj assuming 30 minutes initial appointment
-function getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hours, minutes){
+function getCreateNewEventObjFromInstantAppEmbedded(username, encryptedPassword, course, type, hours, minutes){
 			
 	var userCurTime = getUserCurrentTime(username); // new Date();
 	var end = parseISO8601(userCurTime, true);
@@ -778,6 +778,7 @@ function getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hour
 		allDay: false,
 		course: course,
 		type: typeModified.toLowerCase(),
+		encryptedPassword: encryptedPassword,
 		actions: actions
 	};	
 	
@@ -926,6 +927,111 @@ function scheduleAppointment(event, username) {
 					//hotfix-MisleadingMsg-SchCertExam
 					// noticeDialogWithRedirect("Schedule Certificate Exam", data.availabilityStatus, "alert", $("#courseURL").val());
 					noticeDialogWithRedirect("Schedule request was rejected!", "You have an ongoing certificate exam. <br/>You must first finish your exam before being able to schedule your virtual lab.", "alert", $("#courseURL").val());
+					
+                }else{
+                    isScheduled = true;
+                }
+            //}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+			var header = "Schedule Appointment";
+			var message = "We were unable to schedule you for this appointment.<br/><br/> ** please try again later.";
+			var icon = "alert";
+			message = textStatus + " : " +errorThrown;
+			noticeDialog(header, message, icon);
+			
+			alert(message);
+			// showProgressBar(false);
+		}
+	});
+	
+	// sms: updated on 6/2/2011
+	// return success;
+	return true;
+}
+
+function scheduleAppointmentWithEncryptedPassword(eventWithEncryptedPassword, username) {
+	var dateformatter = "yyyy-mm-dd'T'HH:MM:ss";	
+	var success = false;
+	var requestType;
+	var startDate;
+    
+	// showProgressBar(true);
+	if (eventWithEncryptedPassword.start != "") {
+		startDate = event.start.format(dateformatter);
+	} else {
+		startDate = "";
+	}
+    
+	requestType = getRequestType();
+	
+	$.ajax({
+		type: 'POST',
+		url: 'php/virtuallabs-wscalls.php',
+		dataType: 'json',
+		// sms: updated on 6/2/2011
+		async: true,
+		// sms: updated on 6/2/2011
+		timeout: 0,
+		data: {
+			action: 'scheduleAppointmentsWithEncryptedPassword',
+			id: '',
+			requestingUser:  username, // $('#username').val(),
+			username: username,
+			encryptedPassword: eventWithEncryptedPassword.encryptedPassword,
+			start: startDate,
+			end: eventWithEncryptedPassword.end.format(dateformatter),
+			resourceType: eventWithEncryptedPassword.resourceType,
+			course: eventWithEncryptedPassword.course,
+			affiliationId: '',
+			availabilityStatus: '',
+			requestType: requestType
+		},
+		success: function(data){
+			// sms: updated on 6/2/2011
+			/*
+			var message = "";
+			
+			if (data) {
+				var appointments = generateAppointments(data);
+				var scheduled = 0;
+				var unsheduled = 0;
+				var scheduledMsg = "";
+				var unscheduledMsg = "";
+			
+				success = true;			
+
+				for (a in appointments) {
+					if(appointments[a].id == ""){
+						unsheduled++;
+						success = false;			
+					} else {
+						scheduled++;
+					}
+				}
+
+				if (unscheduled > 0)
+					unscheduledMsg = unsheduled + " appointment(s) could NOT be scheduled.";	
+				scheduledMsg = scheduled + " appointment(s) was scheduled.";
+				message = scheduledMsg + " " + unscheduledMsg;
+				
+				if (!success) 
+					alert(message);
+				
+				// success = true;			
+			} else {
+				message = "We were unable to schedule you for this appointment.<br/><br/> ** please try again later.";
+				alert(message);
+			}
+			
+			// noticeDialog("Schedule Appointment", message, "alert");
+			*/
+            
+            //if(iscerttest){
+                if(!data.id){
+                    isScheduled = false;
+                    //noticeDialog("Schedule Certificate Exam", data.availabilityStatus, "alert");
+					noticeDialogWithRedirect("Schedule Certificate Exam", data.availabilityStatus, "alert", $("#courseURL").val());
 					
                 }else{
                     isScheduled = true;

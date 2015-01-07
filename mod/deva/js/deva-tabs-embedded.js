@@ -274,9 +274,10 @@ function reloadDevaFrontEmbedded() {
             // sms: updated 6/4/2011 commented out the below line
             // interval = setInterval('getCurDevaInsInfo()', 10000);
             
-            if ($('#resourcetype').val() == "VIRTUAL LAB") {
+			if ($('#resourcetype').val() == "VIRTUAL LAB") {
 				createInstantAppointmentEmbedded(
                         $('#username').val(), 
+						$('#encryptedPassword').val(),
                         $('#course').val(), 
                         $('#resourcetype').val(),
 						$('#hours').val(),
@@ -284,6 +285,7 @@ function reloadDevaFrontEmbedded() {
             } else if ($('#resourcetype').val() == "CERTIFICATE"){
                 createInstantAppointment4CTDialogBox(
                         $('#username').val(), 
+						$('#encryptedPassword').val(),
                         $('#course').val(), 
                         $('#resourcetype').val());
             }
@@ -596,7 +598,9 @@ function getCurDevaInsInfo() {
 							$("#devaTabContent").append("<div id='veInsAddr' style='display:none;'>"+ vms.vmInfo[0].accessAddress +"</div>");
 							for (var i=0; i<vms.vmInfo.length; i++) {
 								var userId = $('#userid').val();
-								var linkURL = 'webRDP.php?tab=tab'+i+'&hostName='+vms.vmInfo[i].accessAddress+'&hostPort='+vms.vmInfo[i].accessPort+'&userid='+userId+'&username='+vms.vmInfo[i].username+'&password='+escape(vms.vmInfo[i].password)+'&domain='+vms.vmInfo[i].domain+'&bottomFrameHeightPercentage='+bottomFrameHeightPercentage;
+								var linkURL = 'webRDP.php?tab=tab'+i+'&hostName='+vms.vmInfo[i].accessAddress+'&hostPort='+vms.vmInfo[i].accessPort+'&userid='+userId+'&username='+vms.vmInfo[i].username+
+								// '&password='+escape(vms.vmInfo[i].password)+
+								'&domain='+vms.vmInfo[i].domain+'&bottomFrameHeightPercentage='+bottomFrameHeightPercentage;
 
 								$("#devaTabContent").append("<div id='veInsPort-tab"+i+"' style='display:none;'>"+ vms.vmInfo[i].accessPort +"</div>");
 								$("#devaTabContent").append("<div id='veInsURL-tab"+i+"' style='display:none;'>"+ linkURL +"</div>");

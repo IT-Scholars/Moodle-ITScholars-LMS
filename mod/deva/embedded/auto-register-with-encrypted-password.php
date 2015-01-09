@@ -78,8 +78,8 @@
 		$usernew->mnethostid = $CFG->mnet_localhost_id; // always local user
 		$usernew->confirmed  = 1;
 		$usernew->password = hash_internal_user_password($password);
-		echo "<br/>\$usernew->password: $usernew->password";
-		// $usernew->encrypted_password = $encrypted_password;
+		// echo "<br/>\$usernew->password: $usernew->password";
+		$usernew->encrypted_password = $encrypted_password;
 		// echo "<br/>\$usernew->encrypted_password: $usernew->encrypted_password";
 		$usernew->username = $username;
 		$usernew->email = $email;
@@ -87,7 +87,9 @@
 		$usernew->lastname = $lastname;
 		
 		if(createUserProfile($username, $usernew)){
+			echo "<br/>createUserProfile was successful!";
 			if (!$usernew->id = insert_record('user', $usernew)) {
+				echo "<br/>Error creating user record.";
 				admin_moodlefailed_email($usernew,'addUser',$course);
 				error('Error creating user record');
 			}
@@ -98,7 +100,7 @@
 			$rec->fieldid = 4;
 			$rec->data    = $timezone;
 			insert_record('user_info_data', $rec);
-
+			
 			// Insert the user_custom_profile_field for companyname
 			$rec = new object();
 			$rec->userid = $usernew->id;
@@ -111,11 +113,14 @@
 			
 			// setUserTimeZone($usernew->id, $zone);
 			setWSUserDefaultTimeZone('admin', $usernew);
+			
 			editUserProfilePassword('admin', $usernew->username, $password);
+			
 			if(!addQSUser($usernew)){
 				admin_signuperror_email($usernew);			
 				//error('An error has occured, please try again shortly.');
 			}
+			
 		} else {
 			// $usercreated = false;
 			// deleteQSUser($usernew);

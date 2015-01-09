@@ -1498,16 +1498,17 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 		$password = $usernew->newpassword;
 	}
 	
-	echo "<br/>\$password: $password";
-	$encryptedPassword = Crypt::encrypt($password);
-	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	// echo "<br/>\$password: $password";
+	// $encryptedPassword = Crypt::encrypt($password);
+	$encrypted_password = $usernew->encrypted_password;
+	// echo "<br/>\$encrypted_password: $encrypted_password";
 	
 	try {
 			
 		$params = array('requestingUser' => $requestingUser,
 						'userName' => $usernew->username,
 						// 'password' => $password,		// password is already hashed.
-						'encryptedPassword' => $encryptedPassword,		
+						'encryptedPassword' => $encrypted_password,		
 						'firstName' => $usernew->firstname,
 						'lastName' => $usernew->lastname,
 						'emailAddress' => $usernew->email,
@@ -1520,7 +1521,8 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 		
 		
 		$success = $result->success;
-		
+		// echo "<br/>\$success: $success";
+	
 		
 	}catch (Exception $e) {
 		 //echo $e->getMessage();
@@ -1566,10 +1568,10 @@ function editUserProfile($requestingUser, $userold){
 		$newrole = "Student";
 	}
 
-	require_once($CFG->libdir."/crypt.php");
-	echo "<br/>\$userold->newpassword: $userold->newpassword";
+	// require_once($CFG->libdir."/crypt.php");
+	// echo "<br/>\$userold->newpassword: $userold->newpassword";
 	$encryptedPassword = Crypt::encrypt($userold->newpassword);
-	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	// echo "<br/>\$encryptedPassword: $encryptedPassword";
 	
 	try {
 		
@@ -1625,10 +1627,9 @@ function editUserProfilePassword($requestingUser, $username, $password){
 		$newrole = "Student";
 	}
 
-	require_once($CFG->libdir."/crypt.php");
-	echo "<br/>\$password: $password";
+	// echo "<br/>\$password: $password";
 	$encryptedPassword = Crypt::encrypt($password);
-	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	// echo "<br/>\$encryptedPassword: $encryptedPassword";
 	
 	try {
 						

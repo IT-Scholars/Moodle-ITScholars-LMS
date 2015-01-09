@@ -1347,9 +1347,9 @@ function editUserProfile($requestingUser, $userold){
 	}
 
 	require_once($CFG->libdir."/crypt.php");
-	echo "<br/>\$userold->newpassword: $userold->newpassword";
+	// echo "<br/>\$userold->newpassword: $userold->newpassword";
 	$encryptedPassword = Crypt::encrypt($userold->newpassword);
-	echo "<br/>\$encryptedPassword: $encryptedPassword";
+	// echo "<br/>\$encryptedPassword: $encryptedPassword";
 	
 	try {
 		

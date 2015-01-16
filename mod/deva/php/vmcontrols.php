@@ -230,13 +230,16 @@ function refreshInstanceRequest($devaInsId, $vmName){
 	//$vmName = 'Laptop 1 (laptop1)';
 	
 	try {
-					
+
+		$encryptedPassword = $_COOKIE["encrypted_password_4_moodle"];
+
 		$params = array('devaInsId' => $devaInsId,
-						'vmName' => $vmName); 			
+						'vmName' => $vmName,
+						'encryptedPassword' => $encryptedPassword); 			
 
 		$client=new SoapClient($wsdl,array('location'=>$location));
 
-		$result = $client->refreshVM($params);
+		$result = $client->refreshVMWithEncryptedPassword($params);
 		
 
 	} catch (Exception $e) {

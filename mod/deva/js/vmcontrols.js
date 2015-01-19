@@ -637,7 +637,7 @@ function checkAppointmentOver(me) {
 					
 					//var endDate = data.endDate;
 				}else{
-					$(me).text('Your Session is Over.').css('color','#b00');
+					$(me).text('Your session is over.').css('color','#b00');
 					if(iscerttest){
 						window.frames[0].document.getElementById('timeup').value = 1;
 						var ourForm = window.frames[0].document.getElementById('responseform');

@@ -132,10 +132,13 @@
 <script type="text/javascript" src="js/dialogboxes-embedded.js"></script>
 
 <!--Our scripts-->
+<<<<<<< HEAD
 <!-- Masoud Sadjadi (SMS): Jan. 27, 2015 
 Added the embedded version to make sure the appointment is not 
 automatically renewed for the embedded version, if deva page is 
 on when the time goes out! -->
+=======
+>>>>>>> Avoiding automatic vLab schedule renewal.
 <script type='text/javascript' src='js/vmcontrols-embedded.js'></script>
 <script type='text/javascript' src='js/vmcObjs.js'></script>
 <script type='text/javascript' src='js/message.js'></script>

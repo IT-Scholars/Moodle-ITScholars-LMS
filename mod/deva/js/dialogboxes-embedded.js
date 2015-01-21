@@ -1031,7 +1031,7 @@ function scheduleAppointmentWithEncryptedPassword(eventWithEncryptedPassword, us
                 if(!data.id){
                     isScheduled = false;
                     //noticeDialog("Schedule Certificate Exam", data.availabilityStatus, "alert");
-					noticeDialogWithRedirect("Schedule Certificate Exam", data.availabilityStatus, "alert", $("#courseURL").val());
+					noticeDialogWithRedirect("Schedule "  + eventWithEncryptedPassword.resourceType, data.availabilityStatus, "alert", $("#courseURL").val());
 					
                 }else{
                     isScheduled = true;

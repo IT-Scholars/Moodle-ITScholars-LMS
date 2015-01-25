@@ -86,8 +86,8 @@
 		$usernew->firstname = $firstname;
 		$usernew->lastname = $lastname;
 		
-		if(createUserProfile($username, $usernew)){
-			echo "<br/>createUserProfile was successful!";
+		if(createUserProfileWithEncryptedPassword($username, $usernew)){
+			echo "<br/>createUserProfileWithEncryptedPassword was successful!";
 			if (!$usernew->id = insert_record('user', $usernew)) {
 				echo "<br/>Error creating user record.";
 				admin_moodlefailed_email($usernew,'addUser',$course);
@@ -114,7 +114,7 @@
 			// setUserTimeZone($usernew->id, $zone);
 			setWSUserDefaultTimeZone('admin', $usernew);
 			
-			editUserProfilePassword('admin', $usernew->username, $password);
+			editUserProfilePasswordWithEncryptedPassword('admin', $usernew->username, $password);
 			
 			if(!addQSUser($usernew)){
 				admin_signuperror_email($usernew);			
@@ -149,9 +149,9 @@
 		if(modifyQSUser($usernew)){
 				
 			echo '<br> modifyQSUser was successful';
-			if(editUserProfile($username, $usernew)){
+			if(editUserProfileWithEncryptedPassword($username, $usernew)){
 				    
-				echo '<br> editUserProfile was successful';
+				echo '<br> editUserProfileWithEncryptedPassword was successful';
 				if (!update_record('user', $usernew)) {
 					echo '<br> update_record for user was NOT successful';
 					admin_moodlefailed_email($usernew,'modifyUser',$course);
@@ -198,12 +198,12 @@
 				//set new password if specified
 				if (!empty($password)) {
 					echo '<br> password is being set to ' . $password;
-					if(!editUserProfilePassword('admin', $usernew->username, $password)) {
-						echo "<br> editUserProfilePassword for \$usernew->username $usernew->username and \$password $password was NOT successful";
+					if(!editUserProfilePasswordWithEncryptedPassword('admin', $usernew->username, $password)) {
+						echo "<br> editUserProfilePasswordWithEncryptedPassword for \$usernew->username $usernew->username and \$password $password was NOT successful";
 						admin_moodlefailed_email($usernew,'modifyUser',$course);
 						error('Error updating user password');
 					}								
-					echo "<br> editUserProfilePassword for \$usernew->username $usernew->username and \$password $password was successful";
+					echo "<br> editUserProfilePasswordWithEncryptedPassword for \$usernew->username $usernew->username and \$password $password was successful";
 						
 				} else {
 					echo '<br> password will NOT change';

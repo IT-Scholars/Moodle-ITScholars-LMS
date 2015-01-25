@@ -1498,6 +1498,87 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 		$password = $usernew->newpassword;
 	}
 	
+	try {
+			
+		$params = array('requestingUser' => $requestingUser,
+						'userName' => $usernew->username,
+						'password' => $password,		// password is already hashed.
+						'firstName' => $usernew->firstname,
+						'lastName' => $usernew->lastname,
+						'emailAddress' => $usernew->email,
+						'userRole' => $newrole );
+						//'timeZone' => $timezone );
+		
+		 $client = new SoapClient($wsdl,array('location'=>$location));
+		 $result = $client->createUserProfile($params);
+		
+		
+		
+		$success = $result->success;
+		
+		
+	}catch (Exception $e) {
+		 //echo $e->getMessage();
+		 $success = false;
+
+	}catch (SoapFault $soapfault) {
+		 //echo $soapfault->getMessage();
+		 $success = false;
+	}
+	
+	return $success;
+}
+
+// --- Called from user/editadvanced.php - line: 105
+// --- Called from login/confirm.php - line: 53 - commentted out
+// --- Called from admin/user.php - line: 53 - commented out
+function createUserProfileWithEncryptedPassword($requestingUser, $usernew, $isSignup){
+	$wsdl="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs?wsdl";
+	$location ="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs";
+	$success = false;
+	// Get the user timezone information
+	$user = profile_user_record($usernew->id);
+	//$zone = getUserTimeZone($userold->id);
+	/*
+	$zone = get_record('user_info_data','userid',$userold->id,'fieldid',4);
+	if (!empty($zone->data)) {
+		$timezone = $zone->data;
+	}else{
+		//$timezone = "GMT-05:00 America/New_York";
+		$timezone = "";
+	}*/
+	
+	//$timezone = $usernew->profile_field_zone->inputname;
+	
+	//$newfield = 'profile_field_zone';
+	//$formfield = new $newfield(4, $usernew->id);
+	//$formfield->
+	
+	/*
+	//profile_load_data($theuser);
+	$myuser = new object();
+	//profile_load_data($myuser);
+	$myuser = profile_user_record($usernew->id);
+	if (!empty($myuser->zone)) {
+		$timezone = $myuser->zone;
+	}*/
+
+	
+	//Get the user role
+	$userRole = get_record('role_assignments', 'userid', $userold->id, 'contextid', 1);
+	$role = get_record('role', 'id', $userRole->roleid);
+	
+	if (!empty($role->name)) {
+		$newrole = $role->name;
+	}
+	
+	// Admin account screation password param is newpassword and student signup is password.
+	if($isSignup){
+		$password = $usernew->password;
+	}else{
+		$password = $usernew->newpassword;
+	}
+	
 	// echo "<br/>\$password: $password";
 	// $encryptedPassword = Crypt::encrypt($password);
 	$encrypted_password = $usernew->encrypted_password;
@@ -1536,11 +1617,71 @@ function createUserProfile($requestingUser, $usernew, $isSignup){
 	return $success;
 }
 
-
 // --- Called from user/editadvanced.php - line: 125
 // --- Called from user/edit.php - line: 192
 // --- Called from login/change_password.php - line: 
 function editUserProfile($requestingUser, $userold){
+	$wsdl="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs?wsdl";
+	$location ="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs";
+
+	// Get the user timezone information
+	$user = profile_user_record($userold->id);
+	//$zone = getUserTimeZone($userold->id);
+	$zone = get_record('user_info_data','userid',$userold->id,'fieldid',4);
+	if (!empty($zone->data)) {
+		$timezone = $zone->data;
+	}else{
+		//$timezone = "GMT-05:00 America/New_York";
+		$timezone = "";
+	}
+	
+	//Hash the password before saving
+	//$usernew->password = hash_internal_user_password($userold->newpassword);
+	
+	//Get the user role
+	$userRole = get_record('role_assignments', 'userid', $userold->id, 'contextid', 1);
+	$role = get_record('role', 'id', $userRole->roleid);
+	
+	if (!empty($role->name)) {
+		$newrole = $role->name;
+	}else{
+		$newrole = "Student";
+	}
+
+	try {
+		
+		$params = array('requestingUser' => $requestingUser,
+						'userName' => $userold->username,
+						'password'=>  $userold->newpassword,
+						'firstName' => $userold->firstname,
+						'lastName' => $userold->lastname,
+						'emailAddress' => $userold->email,
+						'userRole' => $newrole,
+						'timeZone' => $timezone,
+						'contactInfo' => $userold->phone1 );
+		
+		$client = new SoapClient($wsdl,array('location'=>$location));
+		$result = $client->editUserProfile($params);
+	
+		
+		$success = $result->success;
+
+	}catch (Exception $e) {
+		 echo $e->getMessage();
+		 $success = false;
+
+	}catch (SoapFault $soapfault) {
+		 echo $soapfault->getMessage();
+		 $success = false;
+	}
+	
+	return $success;
+}
+
+// --- Called from user/editadvanced.php - line: 125
+// --- Called from user/edit.php - line: 192
+// --- Called from login/change_password.php - line: 
+function editUserProfileWithEncryptedPassword($requestingUser, $userold){
 	$wsdl="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs?wsdl";
 	$location ="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs";
 
@@ -1606,6 +1747,60 @@ function editUserProfile($requestingUser, $userold){
 
 // --- Called from login/change_password.php - line: 72
 function editUserProfilePassword($requestingUser, $username, $password){
+	$wsdl="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs?wsdl";
+	$location ="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs";
+	
+	$user = get_record('user','username',$username);
+	$zone = get_record('user_info_data','userid',$user->id,'fieldid',4);
+	if (!empty($zone->data)) {
+		$timezone = $zone->data;
+	}else{
+		//$timezone = "GMT-05:00 America/New_York";
+		$timezone = "";
+	}
+	
+	$userRole = get_record('role_assignments', 'userid', $user->id, 'contextid', 1);
+	$role = get_record('role', 'id', $userRole->roleid);
+	
+	if (!empty($role->name)) {
+		$newrole = $role->name;
+	}else{
+		$newrole = "Student";
+	}
+
+	
+	try {
+						
+		$params = array('requestingUser' => $requestingUser,
+						'userName' => $username,
+						'password' => $password,	
+						'firstName' => $user->firstname,
+						'lastName' => $user->lastname,
+						'emailAddress' => $user->email,
+						'userRole' => $newrole,
+						'timeZone' => $timezone,
+						'contactInfo' => $userold->phone1 );
+		
+		$client = new SoapClient($wsdl,array('location'=>$location));
+		$result = $client->editUserProfile($params);
+	
+		
+		$success = $result->success;
+
+	}catch (Exception $e) {
+		 echo $e->getMessage();
+		 $success = false;
+
+	}catch (SoapFault $soapfault) {
+		 echo $soapfault->getMessage();
+		 $success = false;
+	}
+	
+	return $success;
+}
+
+// --- Called from login/change_password.php - line: 72
+function editUserProfilePasswordWithEncryptedPassword($requestingUser, $username, $password){
 	$wsdl="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs?wsdl";
 	$location ="http://ita-provisioner.cis.fiu.edu:8080/axis2/services/VirtualLabs";
 	

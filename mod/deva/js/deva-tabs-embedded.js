@@ -598,8 +598,7 @@ function getCurDevaInsInfo() {
 							$("#devaTabContent").append("<div id='veInsAddr' style='display:none;'>"+ vms.vmInfo[0].accessAddress +"</div>");
 							for (var i=0; i<vms.vmInfo.length; i++) {
 								var userId = $('#userid').val();
-								var linkURL = 'webRDP.php?tab=tab'+i+'&hostName='+vms.vmInfo[i].accessAddress+'&hostPort='+vms.vmInfo[i].accessPort+'&userid='+userId+'&username='+vms.vmInfo[i].username+
-								// '&password='+escape(vms.vmInfo[i].password)+
+								var linkURL = 'webRDP.php?tab=tab'+i+'&hostName='+vms.vmInfo[i].accessAddress+'&hostPort='+vms.vmInfo[i].accessPort+'&userid='+userId+'&username='+vms.vmInfo[i].username+'&password='+escape(vms.vmInfo[i].password)+
 								'&domain='+vms.vmInfo[i].domain+'&bottomFrameHeightPercentage='+bottomFrameHeightPercentage;
 
 								$("#devaTabContent").append("<div id='veInsPort-tab"+i+"' style='display:none;'>"+ vms.vmInfo[i].accessPort +"</div>");

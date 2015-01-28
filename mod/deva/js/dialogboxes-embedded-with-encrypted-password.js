@@ -149,14 +149,14 @@ function createInstantAppointmentDialogBox(username, course, type) {
 }
 
 // sms: 6/28/2014 Added to support embedded version
-function createInstantAppointmentEmbedded(username, course, type, hours, minutes) {
+function createInstantAppointmentEmbedded(username, encryptedPassword, course, type, hours, minutes) {
 			                
 	progressDialogBox(true);
 				
 	setTimeout(function(){	// Added: to allow the progress bar to appear.
 					
-		var newevent = getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hours, minutes);
-		if (scheduleAppointment(newevent, username)) {
+		var neweventWithEncryptedPassword = getCreateNewEventObjFromInstantAppEmbedded(username, encryptedPassword, course, type, hours, minutes);
+		if (scheduleAppointmentWithEncryptedPassword(neweventWithEncryptedPassword, username)) {
 			// sms: updated on 6/2/2011
 			// var devaWasDisplayed = false;
 			// for (var i=0; i<5; i++) {
@@ -754,7 +754,7 @@ function getCreateNewEventObjFromInstantAppForm(username, course, type){
 
 // sms: 6/28/2014 Added to support embedded version
 //Grabs the Event Obj assuming 30 minutes initial appointment
-function getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hours, minutes){
+function getCreateNewEventObjFromInstantAppEmbedded(username, encryptedPassword, course, type, hours, minutes){
 			
 	var userCurTime = getUserCurrentTime(username); // new Date();
 	var end = parseISO8601(userCurTime, true);
@@ -778,6 +778,7 @@ function getCreateNewEventObjFromInstantAppEmbedded(username, course, type, hour
 		allDay: false,
 		course: course,
 		type: typeModified.toLowerCase(),
+		encryptedPassword: encryptedPassword,
 		actions: actions
 	};	
 	
@@ -923,9 +924,7 @@ function scheduleAppointment(event, username) {
                 if(!data.id){
                     isScheduled = false;
                     //noticeDialog("Schedule Certificate Exam", data.availabilityStatus, "alert");
-					//hotfix-MisleadingMsg-SchCertExam
-					// noticeDialogWithRedirect("Schedule Certificate Exam", data.availabilityStatus, "alert", $("#courseURL").val());
-					noticeDialogWithRedirect("Schedule request was rejected!", "You have an ongoing certificate exam. <br/>You must first finish your exam before being able to schedule your virtual lab.", "alert", $("#courseURL").val());
+					noticeDialogWithRedirect("Schedule " + event.resourceType, data.availabilityStatus, "alert", $("#courseURL").val());
 					
                 }else{
                     isScheduled = true;
@@ -1031,9 +1030,6 @@ function scheduleAppointmentWithEncryptedPassword(eventWithEncryptedPassword, us
                     isScheduled = false;
                     //noticeDialog("Schedule Certificate Exam", data.availabilityStatus, "alert");
 					noticeDialogWithRedirect("Schedule "  + eventWithEncryptedPassword.resourceType, data.availabilityStatus, "alert", $("#courseURL").val());
-=======
-					noticeDialogWithRedirect("Schedule Certificate Exam", data.availabilityStatus, "alert", $("#courseURL").val());
->>>>>>> Reverting deva-tabs-embedded.js & dialogboxes-embedded.js back to the master version and creating the -with-encrypted-password versions.
 					
                 }else{
                     isScheduled = true;

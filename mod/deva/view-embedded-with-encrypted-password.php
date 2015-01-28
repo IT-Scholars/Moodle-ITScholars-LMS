@@ -129,7 +129,7 @@
 <script type='text/javascript' src='jquery-ui/js/dateFormat.js'></script>
 <!-- sms: 6/28/2014 Changed to support embedded version -->
 <!--<script type="text/javascript" src="js/dialogboxes.js"></script>-->
-<script type="text/javascript" src="js/dialogboxes-embedded.js"></script>
+<script type="text/javascript" src="js/dialogboxes-embedded-with-encrypted-password.js"></script>
 
 <!--Our scripts-->
 <script type='text/javascript' src='js/vmcontrols-embedded.js'></script>
@@ -137,7 +137,7 @@
 <script type='text/javascript' src='js/message.js'></script>
 <!-- sms: 6/28/2014 Changed to support embedded version -->
 <!-- <script type='text/javascript' src='js/deva-tabs.js'></script> -->
-<script type='text/javascript' src='js/deva-tabs-embedded.js'></script>
+<script type='text/javascript' src='js/deva-tabs-embedded-with-encrypted-password.js'></script>
 
 <script type='text/javascript' src='js/jquery.countDown.js'></script>
 <script type='text/javascript' src='js/jquery.loading.1.6.4.js'></script>

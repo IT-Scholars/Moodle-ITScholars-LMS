@@ -786,7 +786,7 @@ function getCreateNewEventObjFromInstantAppEmbedded(username, encryptedPassword,
 }
 
 //Grabs the Event Obj from the Instant Apointment form
-function getCreateNewEventObjFromInstantApp4CTForm(username, course, type){
+function getCreateNewEventObjFromInstantApp4CTForm(username, encryptedPassword, course, type){
 
 	var userCurTime = getUserCurrentTime(username); // new Date();
 	var end = parseISO8601(userCurTime, true);
@@ -808,6 +808,7 @@ function getCreateNewEventObjFromInstantApp4CTForm(username, course, type){
 		allDay: false,
 		course: course,
 		type: typeModified.toLowerCase(),
+		encryptedPassword: encryptedPassword,
 		actions: actions
 	};	
 	

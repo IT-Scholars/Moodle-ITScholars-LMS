@@ -187,9 +187,14 @@ function reloadDevaFront() {
 			if(isLeftOpen == 0){
 				devaWasDisplayed = getCurDevaInsInfo();
 				if (!devaWasDisplayed) {
-					var newevent = getCreateNewEventObjFromInstantApp4CTForm($('#username').val(), $('#course').val(), $('#resourcetype').val());
+					var newevent = 
+						getCreateNewEventObjFromInstantApp4CTForm(
+							$('#username').val(), 
+							$('#encryptedPassword').val(),
+                        	$('#course').val(), 
+							$('#resourcetype').val());
 								
-					if (scheduleAppointment(newevent, $('#username').val())) {
+					if (scheduleAppointmentWithEncryptedPassword(newevent, $('#username').val())) {
 						//alert("3test: "+$('#resourcetype').val());
 						certinterval = setInterval('getCurDevaInsInfo()', 10000);
 						//getCurDevaInsInfo();
@@ -203,9 +208,14 @@ function reloadDevaFront() {
 			//alert('debug: 2');
 			devaWasDisplayed = getCurDevaInsInfo();
 			if (!devaWasDisplayed) {
-				var newevent = getCreateNewEventObjFromInstantApp4CTForm($('#username').val(), $('#course').val(), $('#resourcetype').val());
+					var newevent = 
+						getCreateNewEventObjFromInstantApp4CTForm(
+							$('#username').val(), 
+							$('#encryptedPassword').val(),
+                        	$('#course').val(), 
+							$('#resourcetype').val());
 			
-				if (scheduleAppointment(newevent, $('#username').val())) {
+				if (scheduleAppointmentWithEncryptedPassword(newevent, $('#username').val())) {
 					//alert("3test: "+$('#resourcetype').val());
 					certinterval = setInterval('getCurDevaInsInfo()', 10000);
 					//getCurDevaInsInfo();
@@ -300,9 +310,14 @@ function reloadDevaFrontEmbedded() {
 			if(isLeftOpen == 0){
 				devaWasDisplayed = getCurDevaInsInfo();
 				if (!devaWasDisplayed) {
-					var newevent = getCreateNewEventObjFromInstantApp4CTForm($('#username').val(), $('#course').val(), $('#resourcetype').val());
+					var newevent = 
+						getCreateNewEventObjFromInstantApp4CTForm(
+							$('#username').val(), 
+							$('#encryptedPassword').val(),
+                        	$('#course').val(), 
+							$('#resourcetype').val());
 								
-					if (scheduleAppointment(newevent, $('#username').val())) {
+					if (scheduleAppointmentWithEncryptedPassword(newevent, $('#username').val())) {
 						//alert("3test: "+$('#resourcetype').val());
 						certinterval = setInterval('getCurDevaInsInfo()', 10000);
 						//getCurDevaInsInfo();
@@ -316,9 +331,14 @@ function reloadDevaFrontEmbedded() {
 			//alert('debug: 2');
 			devaWasDisplayed = getCurDevaInsInfo();
 			if (!devaWasDisplayed) {
-				var newevent = getCreateNewEventObjFromInstantApp4CTForm($('#username').val(), $('#course').val(), $('#resourcetype').val());
+					var newevent = 
+						getCreateNewEventObjFromInstantApp4CTForm(
+							$('#username').val(), 
+							$('#encryptedPassword').val(),
+                        	$('#course').val(), 
+							$('#resourcetype').val());
 			
-				if (scheduleAppointment(newevent, $('#username').val())) {
+				if (scheduleAppointmentWithEncryptedPassword(newevent, $('#username').val())) {
 					//alert("3test: "+$('#resourcetype').val());
 					certinterval = setInterval('getCurDevaInsInfo()', 10000);
 					//getCurDevaInsInfo();

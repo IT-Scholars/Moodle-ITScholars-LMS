@@ -77,6 +77,12 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
 <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 <script src="gibberish-aes.js"></script>
 <script type="application/javascript">
+	function logTime(message) { 
+        	var currentDate = '[' + new Date().toUTCString() + '] ';
+                console.log(currentDate + ": " + message); 
+		return true;
+        }
+
 	// This method is called after the user logs out of their RDP session. The method name is a configurable applet parameter.
 	function rdpOnLogout() {
     	//alert ( ' User has Logged out ' );
@@ -91,7 +97,7 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
 	}
 
     $( document ).ready(function() {
-        console.log( "document loaded" );
+        logTime( "document loaded" );
 		
 		var key = "<?php echo "$key"; ?>";
 		var key_size = parseInt("<?php echo "$key_size"; ?>");
@@ -107,31 +113,35 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
     });
  
     $( window ).load(function() {
-        console.log( "window loaded" );
+        logTime( "window loaded" );
 
-		WaitForAppletLoad("rdp", 10, 2000, function () {
-        	console.log( "rdp applet loaded" );
-
+	delay = 10000;
+	logTime("Before calling WaitForAppletLoad.");
+	setTimeout(function () { 
+		WaitForAppletLoad("rdp", 10, delay, function () {
+			// logTime("passwordId value is: " + document.getElementById("passwordId").value);
+        		logTime( "rdp applet loaded" );
 			// document.getElementById("usernameId").value = "";
 			document.getElementById("passwordId").value = "";
-    	}, function () {
-      	  console.log( "rdp applet was not loaded after 10 attempts!" );
-    	});
+			// logTime("passwordId value is: " + document.getElementById("passwordId").value);
+    		}, function () {
+      	  		logTime( "rdp applet was not loaded after 10 attempts!" );
+    		});
+	}, delay);
 	});
-	
-	function myDelay(ms) {
-   		ms += new Date().getTime();
-   		while (new Date() < ms){}
-	}
 	
 	/* Attempt to load the applet up to "X" times with a delay. If it succeeds, then execute the callback function. */
 	function WaitForAppletLoad(applet_id, attempts, delay, onSuccessCallback, onFailCallback) {
     	//Test
-		console.log( "WaitForAppletLoad: attempts count down " + attempts );
+		logTime( "WaitForAppletLoad: attempts count down " + attempts );
 		
+
     	var to = typeof (document.getElementById(applet_id));
     	if (to == 'function' || to == 'object') {
-			myDelay(delay);
+		// logTime("before");
+		// setTimeout(function () { logTime("After delay of " + delay) }, delay);
+		// logTime("after");
+		// myDelay(delay);
         	onSuccessCallback(); //Go do it.
         	return true;
     	} else {

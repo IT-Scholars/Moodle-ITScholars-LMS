@@ -169,7 +169,7 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
 
 <!-- Password to authenticate to terminal server with -->
 <!-- Optional SSO Parameter -->
-<param id="passwordId" name="password" value="">
+<param id="passwordId" name="password" value="<?php echo $decrypted_password; ?>">
 
 <!-- AD Domain name to authenticate to terminal server with -->
 <!-- Optional SSO Parameter -->

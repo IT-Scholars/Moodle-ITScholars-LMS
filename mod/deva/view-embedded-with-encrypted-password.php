@@ -10,7 +10,15 @@
  */
 	// setcookie('encrypted_login_4_moodle', $_GET["encrypted_login"], 0, '/', 'localhost', false, false);
 	// setcookie('plaintext_login_4_moodle', $_GET["plaintext_login"], 0, '/'); // , 'localhost', false, false);
-	setcookie('encrypted_password_4_moodle', $_GET["encrypted_password"], 0, '/'); // , 'localhost', false, false);	
+	// setcookie('encrypted_password_4_moodle', $_GET["encrypted_password"], 0, '/'); // , 'localhost', false, false);	
+
+	if (isset($_GET["encrypted_password"])) {
+        // echo "<br/>get for encrypted_password is set and it is : " . $_GET["encrypted_password"];
+        $encryptedPassword = $_GET["encrypted_password"];
+	} else {
+        // echo "<br/>get for encrypted_password is NOT set";
+	}
+	// echo "<br/>\$encryptedPassword: $encryptedPassword";
 
 	require_once('../../config.php');
     require_once($CFG->libdir.'/gdlib.php');
@@ -208,7 +216,7 @@
 <input id ="bottomFrameHeightPercentage" 	type="hidden" value="" />
 <input id ="userid" 						type="hidden" value="<?php echo $USER->id; ?>" />
 <input id ="username" 						type="hidden" value="<?php echo $USER->username; ?>" />
-<input id ="encryptedPassword"				type="hidden" value="<?php echo $_GET["encrypted_password"]; ?>" />
+<input id ="encryptedPassword"              type="hidden" value="<?php echo $encryptedPassword; ?>" />
 <input id ="role" 							type="hidden" value="<?php echo $role; ?>" />
 <input id ="email" 							type="hidden" value="<?php echo $USER->email; ?>" />
 <input id ="url" 							type="hidden" value="<?php echo curPageURL(); ?>" />

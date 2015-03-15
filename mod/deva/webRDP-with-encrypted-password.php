@@ -51,7 +51,12 @@ $plaintext_password = trim ($plaintext_password_dec, "\0");
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->libdir . '/crypt.php');   
-$decrypted_password = Crypt::decrypt($_COOKIE[encrypted_password_4_moodle]);
+if (isset($_GET["encrypted_password"])) {
+        // echo "<br/>get for encryptedPasswordis set and it is : " . $_GET["encrypted_password"];
+        $decrypted_password = Crypt::decrypt($_GET["encrypted_password"]);
+} else {
+        // echo "<br/>get for encrypted_password is NOT set";
+}
 // echo "<br/>\$decrypted_password: $decrypted_password";
 
 include 'GibberishAES.php';
@@ -98,7 +103,7 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
 		var plaintext_password = GibberishAES.dec(encrypted_password, key);
 		
 		// document.getElementById("usernameId").value = plaintext_login;
-		document.getElementById("passwordId").value = plaintext_password;
+		// document.getElementById("passwordId").value = plaintext_password;
     });
  
     $( window ).load(function() {
@@ -114,6 +119,11 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
     	});
 	});
 	
+	function myDelay(ms) {
+   		ms += new Date().getTime();
+   		while (new Date() < ms){}
+	}
+	
 	/* Attempt to load the applet up to "X" times with a delay. If it succeeds, then execute the callback function. */
 	function WaitForAppletLoad(applet_id, attempts, delay, onSuccessCallback, onFailCallback) {
     	//Test
@@ -121,6 +131,7 @@ $encrypted_password = GibberishAES::enc($decrypted_password, $key);
 		
     	var to = typeof (document.getElementById(applet_id));
     	if (to == 'function' || to == 'object') {
+			myDelay(delay);
         	onSuccessCallback(); //Go do it.
         	return true;
     	} else {

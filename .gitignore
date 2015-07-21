@@ -6,3 +6,5 @@ config.php
 moodle-dev
 .gitignore
 **/cert_files/*
+**/.idea
+**/*.iml

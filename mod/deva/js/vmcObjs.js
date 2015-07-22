@@ -23,7 +23,8 @@ function checkRDPMachineStatus(init) {
 	//$("#vmcDebug").html("<br/>this.workingTab: "+currentTabSelected+" ready: "+getRdpTabInfo('ready', currentTabSelected));
 	
 	if(init){
-		stateInterval = setInterval(function(){ checkRDPMachineStatus(false); },30000);	
+		// stateInterval = setInterval(function(){ checkRDPMachineStatus(false); },30000);
+		// 	checkRDPMachineStatus(false);;
 
 	}
 	

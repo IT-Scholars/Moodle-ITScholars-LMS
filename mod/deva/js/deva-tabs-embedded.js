@@ -17,7 +17,10 @@ $(document).ready(function() {
 	// setInterval("setTimeControl();",60000);
 	
 	startStatusInterval();
-	
+	$("#mainscreenid, a.devaTabs, #devaTabContent").click(function(){
+		$("#mainscreenid").focus();
+	});
+
 	//setClick4Tabs();
 	
 	/*
@@ -55,9 +58,10 @@ function setClick4Tabs() {
 		}
 		
 		popDownInfoNoticeBox("<b>Loading:</b><br/>"+vmname,3000);
-		
-		setTimeout("selectTab('"+this.id+"')",1000);
-		
+
+		// setTimeout("selectTab('"+this.id+"')",1000);
+		selectTab(this.id);
+
 		$("#devaTabs a.devaTabs").removeClass("selected");	// JAM: 03/17/2012 - added to reload screen options
 		$(this).addClass("selected");
 		//selectTab(this.id);
@@ -80,7 +84,7 @@ function setClicks4Links(linkedTab,isRow){
 	
 	if(stateInterval)
 		clearInterval(stateInterval);
-	checkRDPMachineStatus(true);	
+	checkRDPMachineStatus(true);
 	
 	setTimeout("selectTab('"+setId+"');",1000);
 }
@@ -594,7 +598,37 @@ function getCurDevaInsInfo() {
 							$("#devaTabContent").append(div);
 							$("#devaTabContent").append("<div id='veInsId' style='display:none;'>"+ vms.vmInfo[0].veInsId +"</div>");
 							$("#devaTabContent").append("<div id='veInsAddr' style='display:none;'>"+ vms.vmInfo[0].accessAddress +"</div>");
-							for (var i=0; i<vms.vmInfo.length; i++) {
+
+						// console.log(vms);
+						//store vminfo
+						for (var i=0; i<vms.vmInfo.length; i++) {
+							//var gid = createGuacId(15);
+							var userId = $('#userid').val();
+							var linkURL = $("#guacUrl").val() +vms.vmInfo[i].accessPort+ '?id=' +vms.vmInfo[i].accessPort+ '&guac.hostname='+
+								vms.vmInfo[i].accessAddress+'&guac.port='+vms.vmInfo[i].accessPort+
+								'&guac.domain='+vms.vmInfo[i].domain+
+								'&guac.username='+escape(vms.vmInfo[i].username)+
+								'&guac.password=' + escape(vms.vmInfo[i].password); //$('#encryptedPassword').val();	//vms.vmInfo[i].password
+
+							// alert("password= " + vms.vmInfo[i].password);
+							// alert("linkurl= " +linkURL);
+
+							$("#devaTabContent").append("<div id='veInsPort-tab"+i+"' style='display:none;'>"+ vms.vmInfo[i].accessPort +"</div>");
+							$("#devaTabContent").append("<div id='veInsURL-tab"+i+"' style='display:none;'>"+ linkURL +"</div>");
+							rdpTabInfo.push({
+								tabId:		'tab'+i,
+								ready:		false,
+								showing:	false,
+								state:		null,
+								veInsId:	vms.vmInfo[i].veInsId,
+								veInsAddr:	vms.vmInfo[i].accessAddress,
+								veInsPort:	vms.vmInfo[i].accessPort,
+								veName:		vms.vmInfo[i].name,
+								veInsURL: 	linkURL
+							});
+						}
+/*
+						for (var i=0; i<vms.vmInfo.length; i++) {
 								var userId = $('#userid').val();
 								var linkURL = 'webRDP.php?tab=tab'+i+'&hostName='+vms.vmInfo[i].accessAddress+'&hostPort='+vms.vmInfo[i].accessPort+'&userid='+userId+'&username='+vms.vmInfo[i].username+'&password='+escape(vms.vmInfo[i].password)+'&domain='+vms.vmInfo[i].domain+'&bottomFrameHeightPercentage='+bottomFrameHeightPercentage;
 
@@ -612,6 +646,7 @@ function getCurDevaInsInfo() {
 													
 													});
 							}
+*/
 						// sms: updated 6/4/2011 commented out the below line
 						// }
 						if(!iscerttest){

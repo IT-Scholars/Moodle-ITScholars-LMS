@@ -18,8 +18,9 @@
 	
 	require_once($CFG->dirroot.'/mod/scheduler/fullcalendar/calendar.php');
 	require_once($CFG->dirroot.'/mod/scheduler/fullcalendar/quotasystem.php');
+	require_once($CFG->dirroot.'/mod/deva/config.php');
 
-	$id 		= $_GET["id"]; // id
+$id 		= $_GET["id"]; // id
 	$username 	= $_GET["username"]; // username for embedded verions
 	$hours 		= $_GET["hours"]; // hours for embedded verions
 	$minutes 	= $_GET["minutes"]; // minutes for embedded verions
@@ -226,6 +227,7 @@ on when the time goes out! -->
 <input id="hours" 							type="hidden" value="<?php echo $hours; ?>" />
 <input id="minutes" 						type="hidden" value="<?php echo $minutes; ?>" />
 <input id="embedded" 						type="hidden" value="true" />
+<input id="guacUrl" type="hidden" value="<?php echo $GUACAMOLE_URL; ?>" />
 
 <style type="text/css">
 	A.devaTabs:link { border: 1px solid #DFEFFC; padding: 2px 5px 2px 5px; background: #dfeffc url(jquery-ui/css/redmond/images/ui-bg_glass_85_dfeffc_1x400.png) 50% 50% repeat-x; font-weight: bold; color: #2e6e9e; font-size:80%;}

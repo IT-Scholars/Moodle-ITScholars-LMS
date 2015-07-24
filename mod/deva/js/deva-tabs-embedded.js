@@ -34,7 +34,47 @@ $(document).ready(function() {
 	*/
 	
 	//progressDialogBox(true);
+// 	iframeParentLoaded();
+//	window.onresize = iframeParentLoaded;
 });
+
+function getParentHeight() {
+	var browserType = getBrowserType();
+	// alert(browserType);
+
+	var myWidth = 0, myHeight = 0;
+	if( typeof( window.innerWidth ) == 'number' ) {
+		//Non-IE
+		myWidth = window.parent.innerWidth;
+		myHeight = window.parent.innerHeight;
+	} else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+		//IE 6+ in 'standards compliant mode'
+		myWidth = window.parent.document.documentElement.clientWidth;
+		myHeight = window.parent.document.documentElement.clientHeight;
+	} else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+		//IE 4 compatible
+		myWidth = window.parent.document.body.clientWidth;
+		myHeight = window.parent.document.body.clientHeight;
+	}
+// 	window.alert( 'Width = ' + myWidth );
+//	window.alert( 'Height = ' + myHeight );
+
+	console.log("myParentHeight: " + myHeight);
+	return myHeight;
+}
+
+
+function iframeParentLoaded() {
+	console.log('hi');
+	var iFrameID = window.parent.document.getElementById('parentIFrame');
+	if(iFrameID) {
+		// here you can make the height, I delete it first, then I make it again
+		iFrameID.height = '';
+		iFrameID.height = getParentHeight(); // iFrameID.contentWindow.document.body.scrollHeight + 'px';
+		console.log('iFrameID.height: ' + iFrameID.height);
+	}
+	console.log('bye');
+}
 
 function setClick4Tabs() {
 
@@ -42,22 +82,20 @@ function setClick4Tabs() {
 		////console.log("#devaTabs a.devaTabs");
 		event.stopPropagation();
 		//event.preventDefault();
-		
 		setRdpTabInfo('ready', currentTabSelected, false);
 		setRdpTabInfo('showing', currentTabSelected, false);
 		currentTabSelected = this.id;
 		//markCurrentInstanceState('disabled');
-		
+
 		$(".devaTabs").css({"color":"#2E6E9E", "background-color":"#86B3D5", "font-weight": "normal", "padding": "2px 5px 2px 5px"});
 		$("#"+this.id).css({"color":"#E17009", "background-color":"#DFEFFC", "font-weight": "bold", "padding": "2px 5px 12px 5px"});
-	
+
 		var vmname = $("#"+this.id+" span").html();
 		//clearRDPScreen();
-		if(this.id != "devaGraph" && this.id != "dataSheet" && this.id != "devaInfo"){
-		    clearRDPScreen();
-		}
-		
-		popDownInfoNoticeBox("<b>Loading:</b><br/>"+vmname,3000);
+		// if(this.id != "devaGraph" && this.id != "dataSheet" && this.id != "devaInfo"){
+			// console.log("3.1");
+			// clearRDPScreen();
+		// }
 
 		// setTimeout("selectTab('"+this.id+"')",1000);
 		selectTab(this.id);
@@ -65,6 +103,8 @@ function setClick4Tabs() {
 		$("#devaTabs a.devaTabs").removeClass("selected");	// JAM: 03/17/2012 - added to reload screen options
 		$(this).addClass("selected");
 		//selectTab(this.id);
+		popDownInfoNoticeBox("<b>Loading:</b><br/>"+vmname,500);
+
 	});
 }
 
@@ -599,6 +639,8 @@ function getCurDevaInsInfo() {
 							$("#devaTabContent").append("<div id='veInsId' style='display:none;'>"+ vms.vmInfo[0].veInsId +"</div>");
 							$("#devaTabContent").append("<div id='veInsAddr' style='display:none;'>"+ vms.vmInfo[0].accessAddress +"</div>");
 
+						// alert("tabContentHeight(): " + tabContentHeight());
+						// alert("bottomFrameHeightPercentage: " + bottomFrameHeightPercentage);
 						// console.log(vms);
 						//store vminfo
 						for (var i=0; i<vms.vmInfo.length; i++) {
@@ -835,9 +877,15 @@ function xstooltip_hide(id)
 
 function resizeIframe(newHeight)
 {
-  document.getElementById('mainscreenid').style.height = parseInt(newHeight) + 'px';
-  //$("#content").css("margin-top", "-10px");
-  //$("#mainscreenid").css('height', parseInt(newHeight) + 'px');
+	document.getElementById('mainscreenid').style.height = parseInt(newHeight) + 'px';
+	//$("#content").css("margin-top", "-10px");
+	//$("#mainscreenid").css('height', parseInt(newHeight) + 'px');
+}
+function resizeIframePercentage(newHeightPercentage)
+{
+	document.getElementById('mainscreenid').style.height = '70';
+	//$("#content").css("margin-top", "-10px");
+	//$("#mainscreenid").css('height', parseInt(newHeight) + 'px');
 }
 function resizeExamIframe(newHeight)
 {
@@ -883,15 +931,18 @@ function tabContentHeight()
 {
 	var tabConHeight = 0;
 	var tabContent = document.getElementById('devaTabContent');
-	tabConHeight = getHeight() - findPosY(tabContent) - 15;
+	tabConHeight = getParentHeight() - findPosY(tabContent); // - 15;
 	// alert(tabConHeight);
+	console.log("tabConHeight: " + tabConHeight);
+	console.log("getHeight(): " + getHeight());
+	console.log("findPosY(tabContent): " + findPosY(tabContent));
 	return tabConHeight;
 }
 function examContentHeight()
 {
 	var tabConHeight = 0;
 	var tabContent = document.getElementById('examContent');
-	tabConHeight = getHeight() - findPosY(tabContent) - 15;
+	tabConHeight = getHeight() - findPosY(tabContent); // - 15;
 	// alert(tabConHeight);
 	return tabConHeight;
 }
@@ -973,13 +1024,16 @@ function getHeight() {
 // 	window.alert( 'Width = ' + myWidth );
 //	window.alert( 'Height = ' + myHeight );
 
-	// alert("myHeight: " + myHeight);
+	console.log("myHeight: " + myHeight);
 	return myHeight;
 }
 
 function selectTab(tabId, height) {
-	
-	clearInterval(stateInterval);	
+
+	// alert("selectTab - height: " + height);
+	// height = 700;
+	actualHeightPercentage=70;
+	clearInterval(stateInterval);
 	
 	if(tabId != "examQuestions"){
 		
@@ -990,10 +1044,11 @@ function selectTab(tabId, height) {
 		// alert("selectTab - Parent: " + "#"+tabId);
 		// alert("selectTab - Parent - height: " + height);
 		var actualHeight = tabContentHeight(); 
-		if (height > 0) 
-			actualHeight = height;		
+		if (height > 0)
+			actualHeight = height;
 		// alert("selectTab - Parent - actualHeight: " + actualHeight);
-		resizeIframe(actualHeight);
+		// resizeIframe(actualHeight);
+		resizeIframePercentage(actualHeightPercentage);
 		if(height){
 			$(".devaTabs").css({"color":"#2E6E9E", "background-color":"#86B3D5", "font-weight": "normal", "padding": "2px 5px 2px 5px"});
 			$("#"+tabId).css({"color":"#E17009", "background-color":"#DFEFFC", "font-weight": "bold", "padding": "2px 5px 12px 5px"});

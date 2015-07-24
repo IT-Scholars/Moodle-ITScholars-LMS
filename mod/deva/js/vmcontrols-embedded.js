@@ -1417,7 +1417,7 @@ function popDownInfoNoticeBox(message,time){
 			trace("#infoMessage");
 			$("#infoMessage").slideUp();
 		});
-		setTimeout('$("#infoMessage").slideUp();',10000);
+		setTimeout('$("#infoMessage").slideUp();',time);
 	});
 }
 function popDownErrorNoticeBox(message,time){
@@ -1429,7 +1429,7 @@ function popDownErrorNoticeBox(message,time){
 			trace("#errorMessage");
 			$("#errorMessage").slideUp();
 		});
-		setTimeout('$("#errorMessage").slideUp();',10000);
+		setTimeout('$("#errorMessage").slideUp();',time);
 	});
 }
 

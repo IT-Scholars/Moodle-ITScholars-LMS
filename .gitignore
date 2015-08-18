@@ -5,3 +5,4 @@ config.php
 .svn/
 moodle-dev
 .gitignore
+**/cert_files/*

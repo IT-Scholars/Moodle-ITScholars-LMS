@@ -667,9 +667,9 @@ function setupScreenOptions(){
 	$("#screenOptions").append('<input id="savedRes" type="hidden" value="default">');
 	
 	// Color Depth Options
-	$("#bpp").append('<option value="8">8</option>');
 	$("#bpp").append('<option value="15">15</option>');
-	$("#bpp").append('<option value="16" selected="selected">16</option>');
+	$("#bpp").append('<option value="16">16</option>');
+	$("#bpp").append('<option value="24" selected="selected">24</option>');
 	
 	// Resolution Options
 	$("#resolution").append('<option value="default" selected="selected">default</option>');
